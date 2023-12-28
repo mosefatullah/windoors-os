@@ -1,0 +1,617 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yidoors - Online Desktop by Ihasway</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!--
+        * OS Name : Yidoors Developer
+        * Version : 1.0.1001 Build 1001
+        * OS Manufacturer : Ihasway
+        * System Name : Virtual Machine (VM)
+        * System Manufacturer : Ihasway
+        * Processor : VMP Ihasway 1000G
+    -->
+    <div class="desktop">
+        <div class="package" hidden></div>
+        <div class="monitor">
+            <div class="screen">
+                <div class="display">
+                    <div class="menu">
+                        <div class="system"></div>
+                        <div class="appc"></div>
+                        <div class="item"></div>
+                    </div>
+                    <div class="document">
+                        <div class="appc"></div>
+                        <div class="contextmenu">
+                            <div onclick="location.reload()">Refresh</div>
+                            <div>View as</div>
+                            <div>Sort as</div>
+                            <section></section>
+                            <div>Paste</div>
+                            <div>More</div>
+                        </div>
+                        <div class="alerts">
+
+                        </div>
+                    </div>
+                    <div class="topbar"></div>
+                </div>
+                <div class="taskbar">
+                    <div class="display">
+                        <div class="datetime">
+                            <p>0:00 PM</p>
+                            <p>00/00/0000</p>
+                        </div>
+                        <div class="keyboard"></div>
+                    </div>
+                    <div class="find">
+                        <input type="search" name="" id="" placeholder="Type here to findout">
+                    </div>
+                    <div class="appc">
+                        <!-- all appc -->
+                    </div>
+                    <div class="menu"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.oncontextmenu = document.body.oncontextmenu = function () { return false; }
+
+        document.querySelectorAll(".display .document")[0].onmousedown = function (event) {
+            var ctx = document.querySelectorAll(".contextmenu")[0];
+            let clientX;
+            let clientY;
+
+            if (event.button == 2) {
+
+                ctx.style.display = "block";
+
+                let mousex = event.clientX;
+                let mousey = event.clientY;
+                ctx.style.top = mousey + "px";
+                ctx.style.left = mousex + "px";
+
+                document.querySelectorAll(".display .document")[0].onclick = function () {
+                    ctx.style.display = "none"
+                }
+            }
+        }
+
+
+        function makeDraggable(div) {
+            var dragItem = div.querySelectorAll(".head")[0];
+            var dragItem2 = div;
+            var container = document.querySelectorAll(".screen")[0];
+
+            var active = false;
+            var currentX;
+            var currentY;
+            var initialX;
+            var initialY;
+            var xOffset = 0;
+            var yOffset = 0;
+
+            container.addEventListener("touchstart", dragStart, false);
+            container.addEventListener("touchend", dragEnd, false);
+            document.addEventListener("touchend", dragEnd, false);
+            container.addEventListener("touchmove", drag, false);
+
+            container.addEventListener("mousedown", dragStart, false);
+            container.addEventListener("mouseup", dragEnd, false);
+            document.addEventListener("mouseup", dragEnd, false);
+            container.addEventListener("mousemove", drag, false);
+
+            function dragStart(e) {
+                if (e.type === "touchstart") {
+                    initialX = e.touches[0].clientX - xOffset;
+                    initialY = e.touches[0].clientY - yOffset;
+                } else {
+                    initialX = e.clientX - xOffset;
+                    initialY = e.clientY - yOffset;
+                }
+
+                if (e.target === dragItem) {
+                    active = true;
+                }
+            }
+
+            function dragEnd(e) {
+                initialX = currentX;
+                initialY = currentY;
+
+                active = false;
+            }
+
+            function drag(e) {
+                if (active) {
+
+                    e.preventDefault();
+
+                    if (e.type === "touchmove") {
+                        currentX = e.touches[0].clientX - initialX;
+                        currentY = e.touches[0].clientY - initialY;
+                    } else {
+                        currentX = e.clientX - initialX;
+                        currentY = e.clientY - initialY;
+                    }
+
+                    xOffset = currentX;
+                    yOffset = currentY;
+
+                    setTranslate(currentX, currentY, dragItem2);
+                }
+            }
+
+            function setTranslate(xPos, yPos, el) {
+                el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
+            }
+        }
+
+        function makeResizableDiv(div) {
+            var element = div;
+            var resizers = div.querySelectorAll('.resizer')[0];
+            var minimum_size = 20;
+            let original_width = 0;
+            let original_height = 0;
+            let original_x = 0;
+            let original_y = 0;
+            let original_mouse_x = 0;
+            let original_mouse_y = 0;
+            var currentResizer = resizers;
+            currentResizer.addEventListener('mousedown', function (e) {
+                e.preventDefault()
+                original_width = parseFloat(getComputedStyle(element, null).getPropertyValue('width').replace('px', ''));
+                original_height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
+                original_x = element.getBoundingClientRect().left;
+                original_y = element.getBoundingClientRect().top;
+                original_mouse_x = e.pageX;
+                original_mouse_y = e.pageY;
+                window.addEventListener('mousemove', resize)
+                window.addEventListener('mouseup', stopResize)
+            })
+
+            function resize(e) {
+                if (currentResizer) {
+                    var width = original_width + (e.pageX - original_mouse_x);
+                    var height = original_height + (e.pageY - original_mouse_y)
+                    if (width > minimum_size) {
+                        element.style.width = width + 'px'
+                    }
+                    if (height > minimum_size) {
+                        element.style.height = height + 'px'
+                    }
+                }
+            }
+
+            function stopResize() {
+                window.removeEventListener('mousemove', resize)
+            }
+        }
+
+
+        request = function (urls, success, error, data) {
+            let xhr = new XMLHttpRequest();
+            if (window.ActiveXObject) {
+                try {
+                    xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                } catch (e) {
+                    xhr = false;
+                }
+            } else {
+                try {
+                    xhr = new XMLHttpRequest();
+                } catch (e) {
+                    xhr = false;
+                }
+            }
+            if (!xhr) {
+                if (error) return error();
+            } else {
+                xhr.open("GET", urls);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        if (success) return success(this.responseText, urls);
+                    } else if (this.status != 200) {
+                        if (error) return error();
+                    }
+                }
+
+            }
+            if (!data) {
+                xhr.send(0);
+            } else {
+                xhr.open("POST", urls);
+                xhr.send(data);
+            }
+        };
+
+        function execAppc(type, id, val, title) {
+            var act = true;
+
+            if (document.querySelectorAll(".screen header")[0]) {
+                for (let i = 0; i < document.querySelectorAll(".screen header").length; i++) {
+                    if (document.querySelectorAll(".screen header")[i].id == id) {
+                        act = false;
+                        if (document.getElementById("" + id + "")) document.getElementById("" + id + "").style.display = "";
+                        document.querySelectorAll(".appc_" + id)[0].style.backgroundColor = "rgba(0, 0, 0, 0.099)";
+                    }
+                }
+            }
+
+            if (act == true) {
+                var space = document.createElement("header");
+                var space_head = document.createElement("div");
+                var space_body = document.createElement("div");
+                var space_res = document.createElement("div");
+                var space_title = document.createElement("p");
+                var right = document.createElement("div");
+                var space_del = document.createElement("span");
+                var space_min = document.createElement("div");
+                if (type == "html") {
+                    space.id = id;
+                    request(val, (data) => {
+                        var parser = new DOMParser();
+                        var htmlDocument = parser.parseFromString(data, "text/html");
+                        var section = htmlDocument.documentElement.querySelectorAll("body")[0];
+                        if (section) {
+                            space_body.appendChild(section);
+                            section.getElementsByTagName("appc")[0].style.display = "none";
+                            if (section.getElementsByTagName("appc")[0]) {
+
+                                if (JSON.parse(section.getElementsByTagName("appc")[0].innerHTML).width) space.style.width = JSON.parse(section.getElementsByTagName("appc")[0].innerHTML).width;
+
+                                if (JSON.parse(section.getElementsByTagName("appc")[0].innerHTML).height) space.style.height = JSON.parse(section.getElementsByTagName("appc")[0].innerHTML).height;
+
+                                if (JSON.parse(section.getElementsByTagName("appc")[0].innerHTML).script) {
+                                    for (let i = 0; i < JSON.parse(section.getElementsByTagName("appc")[0].innerHTML).script.length; i++) {
+
+                                        var a = document.createElement("script");
+                                        a.type = "text/javascript";
+                                        a.src = JSON.parse(section.getElementsByTagName("appc")[0].innerHTML).script[i];
+                                        document.querySelectorAll(".desktop .package")[0].appendChild(a);
+
+                                    }
+                                }
+                                setTimeout(() => {
+                                    if (JSON.parse(section.getElementsByTagName("appc")[0].innerHTML).localscript) {
+
+                                        var a = document.createElement("script");
+                                        a.type = "text/javascript";
+                                        a.innerHTML = JSON.parse(section.getElementsByTagName("appc")[0].innerHTML).localscript;
+                                        space_body.appendChild(a);
+                                        eval(a.innerHTML);
+
+                                    }
+                                }, 1000);
+
+                            }
+                        } else {
+                            space_body.innerHTML = data;
+                        }
+                        space.style.left = Math.floor(Math.random() * 20) + "%";
+                        space.style.top = Math.floor(Math.random() * 30) + "%";
+                        space_head.classList.add("head");
+                        space.appendChild(space_head);
+
+                        space_title.innerHTML = title;
+                        if (JSON.parse(section.getElementsByTagName("appc")[0].innerHTML).info) space_title.title = JSON.parse(section.getElementsByTagName("appc")[0].innerHTML).info;
+                        space_head.appendChild(space_title);
+
+                        space_min.innerHTML = "&#8722;";
+                        space_min.onclick = function () {
+                            space.style.display = "none";
+                            document.querySelectorAll(".appc_" + id)[0].style.backgroundColor = "transparent";
+                        }
+                        right.appendChild(space_min);
+
+                        space_del.innerHTML = "&#10006;";
+                        space_del.onclick = function () {
+                            document.querySelectorAll('.screen')[0].removeChild(space);
+                            document.querySelectorAll(".appc_" + id)[0].classList.remove("active");
+                            document.querySelectorAll(".appc_" + id)[0].style.backgroundColor = "transparent";
+                        }
+                        right.appendChild(space_del);
+
+                        space_head.appendChild(right);
+                        space_body.classList.add("body");
+                        space.appendChild(space_body);
+
+                        space_res.classList.add("resizer");
+                        space.appendChild(space_res);
+
+                        document.querySelectorAll(".appc_" + id)[0].classList.add("active");
+                        document.querySelectorAll(".appc_" + id)[0].style.backgroundColor = "rgba(0, 0, 0, 0.099)";
+                        document.querySelectorAll('.screen')[0].appendChild(space);
+                        makeResizableDiv(space);
+                        makeDraggable(space);
+                        activeAppc();
+                        return;
+                    }, (err) => {
+                        alert("Unexpected error!");
+                    });
+                }
+            }
+
+        }
+
+        setInterval(() => {
+            var appc = document.querySelectorAll(".appc div");
+            for (let i = 0; i < appc.length; i++) {
+                appc[i].style.backgroundImage = "url(" + appc[i].querySelectorAll("icon")[0].innerHTML;
+
+                appc[i].classList.add("appc_" + appc[i].querySelectorAll("name")[0].innerHTML.replace(" ", "").toLowerCase());
+
+                appc[i].onclick = function () {
+                    execAppc("html", appc[i].querySelectorAll("name")[0].innerHTML.replace(" ", "").toLowerCase(), appc[i].querySelectorAll("location")[0].innerHTML, appc[i].querySelectorAll("name")[0].innerHTML);
+                }
+            }
+        }, 1000);
+
+
+
+        function showTimer() {
+            'use strict';
+            var myDiv = document.querySelectorAll(".datetime p")[1],
+                date = new Date(),
+                year = date.getFullYear(),
+                month = date.getMonth(),
+                day = date.getDate();
+            if (month < 10) {
+                month = '0' + month;
+            }
+            if (day < 10) {
+                day = '0' + day;
+            }
+            myDiv.textContent = day + '/' + month + '/' + year;
+        }
+        showTimer();
+
+        var myVar = setInterval(myTimer, 10);
+
+        function myTimer() {
+            var date = new Date();
+            document.querySelectorAll(".datetime p")[0].textContent = date.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function activeAppc() {
+            if (document.querySelectorAll(".screen header").length >= 2) {
+                for (let i = 0; i < document.querySelectorAll(".screen header").length; i++) {
+                    document.querySelectorAll(".screen header")[i].onclick = function () {
+                        document.querySelectorAll(".screen header")[i].style.zIndex = "999";
+                        for (let k = 0; k < document.querySelectorAll(".screen header").length; k++) {
+                            if (k !== i) {
+                                document.querySelectorAll(".screen header")[k].style.zIndex = "900";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        if (document.getElementById) {
+            window.alert = function (msg) {
+                custom_alert("System", msg);
+            }
+        }
+
+        function custom_alert(title, message) {
+
+            var ALERT_TITLE = "System";
+            var ALERT_BUTTON_TEXT = "OK";
+            var shct = document.createElement("div");
+            var shct_module = document.createElement("article");
+            var shct_module_name = document.createElement("name");
+            var shct_module_icon = document.createElement("icon");
+
+            let is_alert_exist = document.getElementById("alert");
+            if (is_alert_exist) {
+                return;
+            }
+
+            if (title) ALERT_TITLE = title;
+
+            let get_body_element = document.querySelector("body");
+            let div_for_alert = document.createElement("div");
+            let alert = get_body_element.appendChild(div_for_alert);
+
+            alert.id = "alert";
+            alert.className = "alert"
+
+            let div_for_alert_box = document.createElement("div")
+            let alert_box = alert.appendChild(div_for_alert_box);
+            alert_box.className = "alert-box";
+
+            alert_box.style.top = document.documentElement.scrollTop + "px";
+            alert_box.style.left = (document.documentElement.scrollWidth - alert_box.offsetWidth) / 2 + "px";
+
+            let alert_header_tag = document.createElement("h1");
+            let alert_title_text = document.createTextNode(ALERT_TITLE)
+            let alert_title = alert_box.appendChild(alert_header_tag);
+            alert_title.appendChild(alert_title_text);
+
+            let alert_paragraph_tag = document.createElement("p");
+            let alert_message = alert_box.appendChild(alert_paragraph_tag);
+            alert_message.textContent = message;
+
+            let ok_button_tag = document.createElement("button");
+            let ok_button_text = document.createTextNode(ALERT_BUTTON_TEXT)
+            let ok_button = alert_box.appendChild(ok_button_tag);
+            ok_button.className = "close-btn";
+
+            shct_module_name.innerHTML = "System";
+            shct_module_icon.innerHTML = "system.svg";
+            shct_module.appendChild(shct_module_icon);
+            shct_module.appendChild(shct_module_name);
+            shct.appendChild(shct_module);
+            shct.classList.add("active");
+            document.querySelectorAll(".taskbar .appc")[0].appendChild(shct);
+
+            ok_button.appendChild(ok_button_text);
+
+            ok_button.addEventListener("click", function () {
+                remove_custom_alert();
+                document.querySelectorAll(".taskbar .appc")[0].removeChild(shct);
+            }, false);
+        }
+
+        function remove_custom_alert() {
+            let HTML_body = document.querySelector("body");
+            let alert = document.getElementById("alert");
+            HTML_body.removeChild(alert);
+        }
+
+
+        function cmdtool(command) {
+            var t = this;
+            if (command == "system") {
+                t.echo("\n* OS Name : Yidoors Developer\n* Version : 1.0.1001 Build 1001\n* OS Manufacturer : Ihasway\n* System Name : Virtual Machine (VM)\n* System Manufacturer : Ihasway\n* Processor : VMP Ihasway 1000G\n");
+            } else if (command == "ip" || command == "ipconfig/?") {
+                $.get('https://www.cloudflare.com/cdn-cgi/trace', function (data) {
+                    data = data.trim().split('\n').reduce(function (obj, pair) {
+                        pair = pair.split('=');
+                        return obj[pair[0]] = pair[1], obj;
+                    }, {});
+                    t.echo("Your ip address  :   " + data.ip);
+                });
+            } else if (command == "clear") {
+                // clear all automatically
+            } else if (command !== '') {
+                try {
+                    {
+                        var result = eval(command);
+                        if (result !== undefined) {
+                            t.echo(new String(result));
+                        }
+                    }
+                } catch (e) {
+                    t.error(new String(e));
+                }
+            } else {
+                t.echo('');
+            }
+        }
+
+
+        function movingOrder() {
+            let list = document.querySelectorAll(".taskbar .appc")[0];
+            let listItems = list.querySelectorAll("div");
+
+            let draggedTarget;
+            let helper;
+            document.addEventListener("dragstart", function (e) {
+                draggedTarget = e.target;
+                draggedTarget.style.backgroundColor = "#444";
+
+                draggedTarget = e.target;
+                draggedTarget.style.backgroundColor = "#444";
+
+                helper = document.createElement("div");
+                helper.innerText = draggedTarget.querySelector(".list-item-name").innerText;
+                helper.style.position = "absolute";
+                helper.style.top = "-9999px";
+                helper.style.padding = "4px 8px";
+                helper.style.backgroundColor = "#000";
+                helper.style.color = "#ddd";
+                helper.style.fontSize = "13px";
+                helper.style.fontFamily = "Consolas";
+                document.querySelector("body").appendChild(helper);
+
+                e.dataTransfer.setDragImage(helper, -20, -10);
+            });
+
+            document.addEventListener("dragenter", function (e) {
+                if (e.target !== draggedTarget && e.target.classList[0] === "list-item") {
+                    const ep = e.target.previousElementSibling;
+                    const en = e.target.nextElementSibling;
+                    const dp = draggedTarget.previousElementSibling;
+                    const dn = draggedTarget.nextElementSibling;
+
+                    if (!ep && !dn) {
+                        list.removeChild(draggedTarget);
+                        e.target.insertAdjacentElement("beforebegin", draggedTarget);
+                    } else if (!en && !dp) {
+                        list.removeChild(draggedTarget);
+                        e.target.insertAdjacentElement("afterend", draggedTarget);
+                    } else if (ep && ep != draggedTarget) {
+                        list.removeChild(e.target);
+                        list.removeChild(draggedTarget);
+                        ep.insertAdjacentElement("afterend", draggedTarget);
+                        draggedTarget.insertAdjacentElement("afterend", e.target);
+                    } else if (!ep) {
+                        list.removeChild(e.target);
+                        list.removeChild(draggedTarget);
+                        dn.insertAdjacentElement("beforebegin", e.target);
+                        e.target.insertAdjacentElement("beforebegin", draggedTarget);
+                    } else if (en && en != draggedTarget) {
+                        list.removeChild(e.target);
+                        list.removeChild(draggedTarget);
+                        en.insertAdjacentElement("beforebegin", draggedTarget);
+                        draggedTarget.insertAdjacentElement("beforebegin", e.target);
+                    } else if (!en) {
+                        list.removeChild(e.target);
+                        dp.insertAdjacentElement("afterend", e.target);
+                    }
+                }
+            });
+
+            document.addEventListener("dragover", function (e) {
+                e.preventDefault();
+            });
+
+            document.addEventListener("drop", function (e) {
+                e.preventDefault();
+                draggedTarget.style.backgroundColor = "";
+                helper.parentNode.removeChild(helper);
+            });
+        }
+
+        movingOrder();
+
+        function showAppc() {
+            request("appc/admin.json", function (r) {
+                var rx = JSON.parse(r);
+                for (var k in rx.system) {
+                    var shct2 = document.createElement("div");
+                    var shct2_module = document.createElement("article");
+                    var shct2_module_name = document.createElement("name");
+                    var shct2_module_icon = document.createElement("icon");
+                    var shct2_module_loc = document.createElement("location");
+                    console.log(rx.system[k])
+                    if (k) shct2_module_name.innerHTML = k;
+                    if (rx.system[k].icon) shct2_module_icon.innerHTML = rx.system[k].icon;
+                    if (rx.system[k].location) shct2_module_loc.innerHTML = rx.system[k].location;
+                    if (k && rx.system[k].icon) {
+                        shct2_module.appendChild(shct2_module_name);
+                        shct2_module.appendChild(shct2_module_icon);
+                        shct2_module.appendChild(shct2_module_loc);
+                        shct2.appendChild(shct2_module);
+                        document.querySelectorAll(".taskbar .appc")[0].appendChild(shct2);
+                    }
+                }
+            }, function (err) {
+                alert("Restart the yidoors! SystemERR");
+            });
+        }
+
+        showAppc();
+
+    </script>
+</body>
+
+</html>
